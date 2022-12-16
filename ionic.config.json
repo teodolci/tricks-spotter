@@ -1,0 +1,7 @@
+{
+  "name": "tricks-spotter",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
