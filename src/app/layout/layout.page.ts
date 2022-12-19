@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
+declare type PageTab = {
+  title: string; // The title of the tab in the tab bar
+  icon: string; // The icon of the tab in the tab bar
+  path: string; // The route's path of the tab to display
+};
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.page.html',
   styleUrls: ['./layout.page.scss'],
 })
-export class LayoutPage implements OnInit {
+export class LayoutPage {
+  tabs: PageTab[];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    this.tabs = [
+      { title: "Acceuil", icon: "add", path: "accueil" },
+      { title: "Géolocalisation", icon: "map", path: "geoloc" },
+      { title: "Mon compte", icon: "list", path: "profil" },
+    ];
   }
-
 }

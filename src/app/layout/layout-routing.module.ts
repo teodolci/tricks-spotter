@@ -5,24 +5,31 @@ import { LayoutPage } from './layout.page';
 
 const routes: Routes = [
   {
+    // Route par défaut
     path: '',
-    component: LayoutPage
-  },
-  {
-    path: 'accueil',
-    loadChildren: () => import('./accueil/accueil.module').then( m => m.AccueilPageModule)
-  },
-  {
-    path: 'spots-aproximite',
-    loadChildren: () => import('./spots-aproximite/spots-aproximite.module').then( m => m.SpotsAProximitePageModule)
-  },
-  {
-    path: 'geoloc',
-    loadChildren: () => import('./geoloc/geoloc.module').then( m => m.GeolocPageModule)
-  },
-  {
-    path: 'profil',
-    loadChildren: () => import('./profil/profil.module').then( m => m.ProfilPageModule)
+    component: LayoutPage,
+    children: [
+      {
+        path: "",
+        redirectTo: "accueil",
+        pathMatch: "full",
+      },
+      {
+        // Route pour la page d'accueil
+        path: 'accueil',
+        loadChildren: () => import('./accueil/accueil.module').then(m => m.AccueilPageModule)
+      },
+      {
+        // Route pour la page de géolocalisation
+        path: 'geoloc',
+        loadChildren: () => import('./geoloc/geoloc.module').then(m => m.GeolocPageModule)
+      },
+      {
+        // Route pour la page de profil
+        path: 'profil',
+        loadChildren: () => import('./profil/profil.module').then(m => m.ProfilPageModule)
+      }
+    ]
   }
 ];
 
@@ -30,4 +37,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class LayoutPageRoutingModule {}
+export class LayoutPageRoutingModule { }

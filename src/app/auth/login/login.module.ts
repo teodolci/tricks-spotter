@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SpotsAProximitePageRoutingModule } from './spots-aproximite-routing.module';
+import { LoginPageRoutingModule } from './login-routing.module';
 
-import { SpotsAProximitePage } from './spots-aproximite.page';
+import { LoginPage } from './login.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SpotsAProximitePageRoutingModule
+    LoginPageRoutingModule
   ],
-  declarations: [SpotsAProximitePage]
+  declarations: [LoginPage]
 })
-export class SpotsAProximitePageModule {}
+export class LoginPageModule {}
