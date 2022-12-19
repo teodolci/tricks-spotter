@@ -7,7 +7,7 @@ import { AuthResponse } from "../models/auth-response";
 import { User } from "../models/user";
 import { AuthRequest } from "../models/auth-request";
 
-const API_URL = "https://tricks-spotter-api.onrender.com/";
+const API_URL = "https://tricks-spotter-api.onrender.com";
 
 /**
  * Authentication service for login/logout.
