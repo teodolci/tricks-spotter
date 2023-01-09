@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ViewWillEnter } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-geoloc',
@@ -19,7 +20,7 @@ export class GeolocPage implements ViewWillEnter {
 
   ionViewWillEnter(): void {
     // Make an HTTP request to retrieve the spots.
-    const url = "https://tricks-spotter-api.onrender.com/spots";
+    const url = `${environment.apiUrl}/spots`;
     this.http.get(url).subscribe((spots) => {
       console.log(`Spots loaded`, spots);
     });
