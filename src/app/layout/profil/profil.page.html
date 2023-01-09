@@ -1,6 +1,16 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Mon compte</ion-title>
+  <ion-toolbar color="primary">
+
+    <!-- Profile image and user names -->
+    <ion-item class="userInfo">
+      <ion-avatar slot="start">
+        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      </ion-avatar>
+      <div>
+        <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
+        <ion-label class="username">@{{user.userName}}</ion-label>
+      </div>
+    </ion-item>
 
     <!-- Logout button -->
     <ion-buttons slot="end">
