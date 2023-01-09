@@ -7,7 +7,7 @@ import { AuthRequest } from "../models/auth-request";
 
 import { Observable, ReplaySubject, from } from "rxjs";
 import { delayWhen, map } from "rxjs/operators";
-import { Storage } from "@ionic/storage";
+import { Storage } from "@ionic/storage-angular";
 
 const API_URL = "https://tricks-spotter-api.onrender.com";
 
