@@ -1,7 +1,5 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-img class="logo" src="assets/icon/logo-base.png"></ion-img>
 </ion-header>
 
 <ion-content>
@@ -26,13 +24,18 @@
 
     <div class="ion-padding">
       <!-- Submit button -->
-      <ion-button type="submit" expand="block" [disabled]="loginForm.invalid">Log in</ion-button>
-      <ion-note class="loginError" color="danger" slot="error" *ngIf="loginError">Username of password is invalid</ion-note>
+      <ion-button type="submit" [disabled]="loginForm.invalid">Log in</ion-button>
+      <ion-note class="loginError" color="danger" slot="error" *ngIf="loginError">Username or password is
+        invalid</ion-note>
     </div>
   </form>
 </ion-content>
 
 <ion-footer>
-  <ion-label>Don't have an account yet?</ion-label>
-  <ion-button fill="clear">SIGNUP</ion-button>
+  <ion-toolbar class="signup-footer" color="primary">
+    <ion-label class="signup-label">Don't have an account yet?</ion-label>
+    <ion-buttons class="signup-button" slot="end">
+      <ion-button fill="clear">SIGNUP</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-footer>
