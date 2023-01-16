@@ -1,17 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
-
-    <!-- Profile image and user names -->
-    <ion-item class="userInfo">
-      <ion-avatar slot="start">
-        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-      </ion-avatar>
-      <div>
-        <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
-        <ion-label class="username">@{{user.userName}}</ion-label>
-      </div>
-    </ion-item>
-
+  <ion-toolbar>
     <!-- Logout button -->
     <ion-buttons slot="end">
       <ion-button (click)="logOut()">
@@ -19,6 +7,18 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+    <!-- Profile image and user names -->
+    <ion-item class="userInfo" lines="none">
+      <ion-avatar slot="start">
+        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      </ion-avatar>
+      <ion-label>
+        <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
+        <ion-label class="username">@{{user.userName}}</ion-label>
+      </ion-label>
+    </ion-item>
+
 </ion-header>
 
 <ion-content>
