@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('./accueil/accueil.module').then(m => m.AccueilPageModule)
       },
       {
+        path: 'addtrick',
+        loadChildren: () => import('./addtrick/addtrick.module').then( m => m.AddtrickPageModule)
+      },
+      {
         // Route pour la page de géolocalisation
         path: 'geoloc',
         loadChildren: () => import('./geoloc/geoloc.module').then(m => m.GeolocPageModule)
@@ -31,6 +35,7 @@ const routes: Routes = [
       }
     ]
   }
+
 ];
 
 @NgModule({
