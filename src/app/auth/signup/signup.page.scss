@@ -1,0 +1,33 @@
+///////////////////////////////////////////////////////////////////////////// HEADER
+//Manage the display of the logo
+ion-header {
+    display: flex;
+    justify-content: center;
+    height: 200px;
+    margin-bottom: 50px;
+    padding-top: 50px;
+}
+
+///////////////////////////////////////////////////////////////////////////// CONTENT
+//Don't change the color of the label when selected AND when incorrect
+ion-item.item-has-focus ion-label, ion-item.ion-invalid ion-label {
+    color: black !important;
+}
+
+//Width of the inputs of the form
+ion-list ion-item {
+    width: 80%;
+    transform: translate(10%, 0);
+}
+
+.ion-padding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+////////////////////////////////////////////////////////////////////////////// FOOTER
+.signup-label {
+    color: black;
+    font-size: 14px;
+}

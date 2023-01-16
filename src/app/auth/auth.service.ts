@@ -4,6 +4,8 @@ import { Injectable } from "@angular/core";
 import { AuthResponse } from "../models/auth-response";
 import { User } from "../models/user";
 import { AuthRequest } from "../models/auth-request";
+import { SignupRequest } from "../models/signup-request";
+import { SignupResponse } from "../models/signup-response";
 
 import { Observable, ReplaySubject, from } from "rxjs";
 import { delayWhen, map } from "rxjs/operators";
@@ -49,6 +51,11 @@ export class AuthService {
         return auth.user;
       })
     );
+  }
+
+  signUp$(signupRequest: SignupRequest): Observable<User> {
+    const signupUrl = `${environment.apiUrl}/users`;
+    return this.http.post<SignupResponse>(signupUrl, signupRequest);
   }
 
   private saveAuth$(auth: AuthResponse): Observable<void> {
