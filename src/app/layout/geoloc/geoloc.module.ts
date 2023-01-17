@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { GeolocPageRoutingModule } from './geoloc-routing.module';
 
 import { GeolocPage } from './geoloc.page';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    GeolocPageRoutingModule
+    GeolocPageRoutingModule,
+    LeafletModule
   ],
   declarations: [GeolocPage]
 })
