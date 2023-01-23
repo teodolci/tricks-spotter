@@ -1,3 +1,34 @@
 .map {
     height: 100%;
 }
+
+.searchbar {
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ion-searchbar {
+    width: 80%;
+    opacity: 80%;
+}
+
+.searchlist{
+    width: 80%;
+}
+
+.leaflet-control-layers{
+    visibility: hidden !important;
+}
+
+.spotDetails {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    z-index: 999;
+    display: none;
+}

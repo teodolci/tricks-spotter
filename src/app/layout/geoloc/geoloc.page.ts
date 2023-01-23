@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { latLng, Map, MapOptions, marker, Marker, tileLayer } from 'leaflet';
 import { defaultIcon } from 'src/app/models/default-marker';
 
+//Pattern of the paginated datas
 type Paginated<T = unknown> = {
   data: T[],
   total: number;
@@ -45,24 +46,48 @@ export class GeolocPage implements ViewWillEnter {
       layers: [
         tileLayer(
           'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          { maxZoom: 15 }
+          { maxZoom: 18 }
         )
       ],
-      zoom: 13,
-      center: latLng(46.519962, 6.633597)
+      zoom: 15,
+      center: latLng(46.519962, 6.633597),
+      zoomControl: false
     };
     this.mapMarkers = [];
   }
 
+  
   ionViewWillEnter(): void {
     // Make an HTTP request to retrieve the spots.
     const url = `${environment.apiUrl}/spots`;
     this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
       spots.data.forEach(spot => {
-        console.log(spot)
-        this.mapMarkers.push(marker([spot.geolocation[0], spot.geolocation[1]], {icon:defaultIcon}))
+        this.data.push(spot.name)
+        this.mapMarkers.push(marker([spot.geolocation[0], spot.geolocation[1]], { icon: defaultIcon }).bindPopup(spot.name))
       })
     });
+  }
+
+  //Manage the search bar with the names of the spots
+  public data = [];
+  public results = [...this.data];
+  public focused = false;
+  handleChange(event) {
+    const query = event.target.value.toLowerCase();
+    this.results = this.data.filter(d => d.toLowerCase().indexOf(query) > -1);
+    //Limiter à 5 elements de complétion de recherche
+    if (this.data.length >= 5) this.results = this.results.slice(0, 5)
+    if (this.results.length != 0) {
+      this.focused = true
+    } else {
+      this.focused = false
+    }
+  }
+  handleFocus() {
+    if (this.results.length != 0) this.focused = true
+  }
+  handleBlur() {
+    this.focused = false
   }
 
   onMapReady(map: Map) {
