@@ -22,6 +22,10 @@ ion-header {
 
 ///////////////////////////////////////////////// CONTENT
 
+ion-content ion-title {
+    margin-top: 15px;
+}
+
 ion-card {
     display: flex;
     flex-direction: row;
@@ -31,9 +35,17 @@ ion-card {
 
 .card-text {
     height: 100%;
+    width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.card-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 ion-card-header {
@@ -64,4 +76,12 @@ ion-card-content {
     margin-top: 2px;
     height: 15px;
     width: 15px;
+}
+
+.more {
+    width: 100%;
+}
+
+.deleteIcon {
+    color: #b23b3b;
 }

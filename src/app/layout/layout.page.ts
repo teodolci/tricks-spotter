@@ -16,7 +16,6 @@ export class LayoutPage {
 
   constructor() {
     this.tabs = [
-      { title: "Accueil", icon: "home-outline", path: "accueil" },
       { title: "Ajout Tricks", icon: "add", path: "addtrick" },
       { title: "Spots", icon: "location-outline", path: "geoloc" },
       { title: "Mon compte", icon: "person-outline", path: "profil" },

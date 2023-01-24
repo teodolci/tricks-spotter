@@ -45,7 +45,7 @@ declare type Spot = {
   templateUrl: './profil.page.html',
   styleUrls: ['./profil.page.scss']
 })
-export class ProfilPage implements OnInit{
+export class ProfilPage implements OnInit {
   user: User
   spot: any
   userTrick: any
@@ -57,6 +57,8 @@ export class ProfilPage implements OnInit{
   ) { }
 
   public tricks = []
+  public pageCounter = 1
+  public everythingLoaded = false
   ngOnInit() {
     //Retrieve the infos of the user connected
     this.auth.getUser$()
@@ -65,9 +67,14 @@ export class ProfilPage implements OnInit{
       });
 
     //Retrieve all the tricks of the user connected
-    const urlTricks = `${environment.apiUrl}/users/${this.user._id}/tricks`;
+    this.getTricksPage(this.pageCounter)
+  }
+
+  getTricksPage(page: number) {
+    const urlTricks = `${environment.apiUrl}/users/${this.user._id}/tricks?page=${page}`;
     const urlSpot = `${environment.apiUrl}/spots`;
     const urlUser = `${environment.apiUrl}/users`;
+
     this.http.get<Paginated<Trick>>(urlTricks).subscribe((tricks) => {
       tricks.data.forEach(trick => {
         //Get the spot name
@@ -83,7 +90,37 @@ export class ProfilPage implements OnInit{
         });
         this.tricks.push(trick)
       });
+      //Check if everything is loaded
+      if(tricks.page * tricks.pageSize >= tricks.total) this.everythingLoaded = true
     });
+
+
+  }
+
+  deleteTrick(event:any) {
+    const id = event.srcElement.attributes.id.nodeValue
+    const urlTricks = `${environment.apiUrl}/tricks/${id}`;
+    this.http.delete(urlTricks).subscribe({
+      next: (res) => {
+        const index = this.tricks.indexOf(res)
+        this.tricks.splice(index, 1)
+        window.location.reload()
+        console.warn("Tricks deleted")
+      },
+      error: (err) => {
+        console.warn(`Trick delete failed: ${err.message}`);
+      },
+    });
+  }
+
+  modifyTrick(event:any) {
+    
+  }
+
+  loadMore() {
+    this.pageCounter++
+    this.getTricksPage(this.pageCounter)
+    console.log("more")
   }
 
   logOut() {

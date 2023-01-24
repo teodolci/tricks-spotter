@@ -22,9 +22,13 @@
 </ion-header>
 
 <ion-content>
+  <ion-title>
+    Tricks postés
+  </ion-title>
   <!-- The cards to see the tricks -->
   <ion-card *ngFor="let trick of tricks">
-    <img class="miniature" alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+    <img class="miniature" alt="Silhouette of mountains"
+      src="https://ionicframework.com/docs/img/demos/card-media.png" />
     <div class="card-text">
       <ion-card-header>
         <ion-card-title>{{trick.name}}</ion-card-title>
@@ -39,6 +43,18 @@
       </ion-card-content>
     </div>
 
+    <div class="card-buttons">
+      <ion-button id={{trick._id}} fill="clear" (click)="modifyTrick($event)">
+        <ion-icon class="modifyIcon" name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button id={{trick._id}} fill="clear" (click)="deleteTrick($event)">
+        <ion-icon class="deleteIcon" name="trash-outline"></ion-icon>
+      </ion-button>
+
+    </div>
   </ion-card>
+
+  <!-- To load more tricks -->
+  <ion-button *ngIf="!everythingLoaded" class="more" (click)="loadMore()" fill="clear">plus</ion-button>
 
 </ion-content>

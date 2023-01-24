@@ -47,7 +47,7 @@ export class LoginPage {
 
     // Perform the authentication request to the API.
     this.auth.logIn$(this.authRequest).subscribe({
-      next: () => this.router.navigateByUrl("/"),
+      next: () => this.router.navigateByUrl("/geoloc"),
       error: (err) => {
         this.loginError = true;
         console.warn(`Authentication failed: ${err.message}`);
