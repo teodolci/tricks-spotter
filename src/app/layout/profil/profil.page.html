@@ -3,24 +3,42 @@
     <!-- Logout button -->
     <ion-buttons slot="end">
       <ion-button (click)="logOut()">
-        <ion-icon name="log-out"></ion-icon>
+        <ion-icon class="logoutIcon" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-    <!-- Profile image and user names -->
-    <ion-item class="userInfo" lines="none">
-      <ion-avatar slot="start">
-        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-      </ion-avatar>
-      <ion-label>
-        <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
-        <ion-label class="username">@{{user.userName}}</ion-label>
-      </ion-label>
-    </ion-item>
+  <!-- Profile image and user names -->
+  <ion-item class="userInfo" lines="none">
+    <ion-avatar slot="start">
+      <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    </ion-avatar>
+    <ion-label>
+      <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
+      <ion-label class="username">@{{user.userName}}</ion-label>
+    </ion-label>
+  </ion-item>
 
 </ion-header>
 
 <ion-content>
+  <!-- The cards to see the tricks -->
+  <ion-card *ngFor="let trick of tricks">
+    <img class="miniature" alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+    <div class="card-text">
+      <ion-card-header>
+        <ion-card-title>{{trick.name}}</ion-card-title>
+        <ion-card-subtitle>{{trick.spotName}}</ion-card-subtitle>
+        <div class="categoryContainer">
+          <img *ngFor="let category of trick.categories" class="categoryIcon" src="assets/icon/spots/{{category}}.png">
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        @{{trick.userName}} <br>
+        {{trick.creationDate | date: 'dd.MM.yyyy'}}
+      </ion-card-content>
+    </div>
+
+  </ion-card>
 
 </ion-content>

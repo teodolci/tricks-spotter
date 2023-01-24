@@ -9,9 +9,59 @@ ion-avatar {
 }
 
 ion-header {
-    padding-bottom: 50px;
+    padding-bottom: 30px;
 }
 
 .userInfo {
     padding-left: 20px;
+}
+
+.logoutIcon {
+    color: #b23b3b;
+}
+
+///////////////////////////////////////////////// CONTENT
+
+ion-card {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    align-items: center;
+}
+
+.card-text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+ion-card-header {
+    padding-bottom: 0;
+}
+
+.miniature {
+    width: 100px;
+    height: 100px;
+    margin-left: 25px;
+}
+
+ion-card-title {
+    font-size: 14px;
+}
+
+ion-card-subtitle {
+    font-size: 12px;
+}
+
+ion-card-content {
+    font-size: 12px;
+}
+
+.categoryIcon {
+    margin: 0;
+    margin-left: 5px;
+    margin-top: 2px;
+    height: 15px;
+    width: 15px;
 }

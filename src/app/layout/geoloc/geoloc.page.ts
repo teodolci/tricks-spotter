@@ -4,12 +4,16 @@ import { ViewWillEnter } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-import { latLng, Map, MapOptions, marker, Marker, tileLayer } from 'leaflet';
+import { latLng, Map, MapOptions, marker, Marker, tileLayer, icon } from 'leaflet';
 import { defaultIcon } from 'src/app/models/default-marker';
+
+import { Geolocation } from '@capacitor/geolocation';
 
 //Pattern of the paginated datas
 type Paginated<T = unknown> = {
   data: T[],
+  page: number,
+  pageSize: number,
   total: number;
 }
 
@@ -28,7 +32,7 @@ declare type Spot = {
   templateUrl: './geoloc.page.html',
   styleUrls: ['./geoloc.page.scss'],
 })
-export class GeolocPage implements ViewWillEnter {
+export class GeolocPage implements OnInit {
 
   spot: Spot;
 
@@ -51,22 +55,41 @@ export class GeolocPage implements ViewWillEnter {
       ],
       zoom: 15,
       center: latLng(46.519962, 6.633597),
-      zoomControl: false
+      zoomControl: false,
+      attributionControl: false
     };
     this.mapMarkers = [];
   }
 
-  
-  ionViewWillEnter(): void {
+  public coordinate = undefined
+  async getDevicePosition() {
+    const coordinate = await Geolocation.getCurrentPosition()
+    console.log("got position")
+    this.coordinate = coordinate
+  }
+
+  ngOnInit() {
+    this.getDevicePosition()
+    console.log(this.coordinate)
     // Make an HTTP request to retrieve the spots.
     const url = `${environment.apiUrl}/spots`;
     this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
       spots.data.forEach(spot => {
         this.data.push(spot.name)
-        this.mapMarkers.push(marker([spot.geolocation[0], spot.geolocation[1]], { icon: defaultIcon }).bindPopup(spot.name))
+        //Create a custom icon for the marker
+        const customIcon = icon({
+          iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
+
+          iconSize: [25, 38], // size of the icon
+          iconAnchor: [12, 38],
+          popupAnchor: [1, -34],
+
+        });
+        this.mapMarkers.push(marker([spot.geolocation[0], spot.geolocation[1]], { icon: customIcon }).bindPopup(spot.name))
       })
     });
   }
+
 
   //Manage the search bar with the names of the spots
   public data = [];
@@ -90,6 +113,8 @@ export class GeolocPage implements ViewWillEnter {
     this.focused = false
   }
 
+
+  //Solve tiles bug on map
   onMapReady(map: Map) {
     setTimeout(() => map.invalidateSize(), 0);
   }

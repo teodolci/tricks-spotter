@@ -4,6 +4,14 @@ import { Router } from "@angular/router";
 import { AuthService } from "src/app/auth/auth.service";
 import { environment } from 'src/environments/environment';
 
+//Pattern of the paginated datas
+type Paginated<T = unknown> = {
+  data: T[],
+  page: number,
+  pageSize: number,
+  total: number;
+}
+
 declare type User = {
   _id: string;
   firstName: string;
@@ -11,13 +19,36 @@ declare type User = {
   userName: string;
 };
 
+declare type Trick = {
+  _id: string;
+  name: string;
+  video: string;
+  userId: string;
+  spotId: string;
+  spotName: string;
+  userName: string;
+  categories: [string];
+};
+
+declare type Spot = {
+  _id: string;
+  name: string;
+  description: string;
+  category: string[];
+  geolocation: number[];
+  picture: string;
+  creationDate: Date;
+};
+
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.page.html',
   styleUrls: ['./profil.page.scss']
 })
-export class ProfilPage implements OnInit {
+export class ProfilPage implements OnInit{
   user: User
+  spot: any
+  userTrick: any
 
   constructor(
     private auth: AuthService,
@@ -25,6 +56,7 @@ export class ProfilPage implements OnInit {
     public http: HttpClient,
   ) { }
 
+  public tricks = []
   ngOnInit() {
     //Retrieve the infos of the user connected
     this.auth.getUser$()
@@ -33,9 +65,24 @@ export class ProfilPage implements OnInit {
       });
 
     //Retrieve all the tricks of the user connected
-    const url = `${environment.apiUrl}/users/${this.user._id}/tricks`;
-    this.http.get(url).subscribe((tricks) => {
-      console.log(`Tricks loaded`, tricks);
+    const urlTricks = `${environment.apiUrl}/users/${this.user._id}/tricks`;
+    const urlSpot = `${environment.apiUrl}/spots`;
+    const urlUser = `${environment.apiUrl}/users`;
+    this.http.get<Paginated<Trick>>(urlTricks).subscribe((tricks) => {
+      tricks.data.forEach(trick => {
+        //Get the spot name
+        this.http.get(`${urlSpot}/${trick.spotId}`).subscribe((spot) => {
+          this.spot = spot
+          trick.categories = this.spot.category
+          trick.spotName = this.spot.name
+        });
+        //Get the user name
+        this.http.get(`${urlUser}/${trick.userId}`).subscribe((user) => {
+          this.userTrick = user
+          trick.userName = this.user.userName
+        });
+        this.tricks.push(trick)
+      });
     });
   }
 

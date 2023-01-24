@@ -34,7 +34,7 @@ export class SignupPage {
     // Hide any previous login error.
     this.signupError = false;
 
-    // Perform the authentication request to the API.
+    // Perform the signup request to the API.
     this.auth.signUp$(this.signupRequest).subscribe({
       next: () => this.router.navigateByUrl("/login"),
       error: (err) => {

@@ -1,9 +1,48 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Ajout d'un trick</ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-toolbar>
+    <ion-title>Ajouter un Tricks</ion-title>
+  </ion-toolbar>
+  <form #trickForm="ngForm" (submit)="onSubmit(trickForm)">
+    <ion-list>
+      <!-- User input -->
+      <ion-item>
+        <ion-label position="floating">Utilisateur</ion-label>
+        <ion-input inputmode="text" required="true" name="userName" [readonly]="true"
+          value=@{{user.userName}}></ion-input>
+      </ion-item>
 
+      <!-- Spot input -->
+      <ion-item>
+        <ion-label position="floating">Spot</ion-label>
+        <ion-input inputmode="text" #spotId="ngModel" required="true" name="spotId"
+          [(ngModel)]="trickRequest.spotId"></ion-input>
+        <ion-note slot="error" *ngIf="spotId.invalid && spotId.touched">Spot nécessaire</ion-note>
+      </ion-item>
+
+      <!-- Tricks name input -->
+      <ion-item>
+        <ion-label position="floating">Nom du Tricks</ion-label>
+        <ion-input inputmode="text" #name="ngModel" required="true" name="name"
+          [(ngModel)]="trickRequest.name"></ion-input>
+        <ion-note slot="error" *ngIf="name.invalid && name.touched">Nom du tricks nécessaire</ion-note>
+      </ion-item>
+
+      <!-- Video input -->
+      <ion-item>
+        <ion-label position="floating">Video</ion-label>
+        <ion-input inputmode="text" #video="ngModel" required="true" name="video"
+          [(ngModel)]="trickRequest.video"></ion-input>
+        <ion-note slot="error" *ngIf="video.invalid && video.touched">Vidéo nécessaire</ion-note>
+      </ion-item>
+
+      <div class="ion-padding">
+        <!-- Submit button -->
+        <ion-button type="submit" [disabled]="trickForm.invalid">Ajouter le Tricks</ion-button>
+        <ion-note class="trickError" color="danger" slot="error" *ngIf="trickError">Something wrong</ion-note>
+      </div>
+    </ion-list>
+  </form>
 </ion-content>
