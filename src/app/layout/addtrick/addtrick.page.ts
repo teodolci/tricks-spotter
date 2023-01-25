@@ -39,14 +39,16 @@ export class AddtrickPage implements OnInit {
       spotId: undefined,
       userId: undefined,
     },
-    this.trickRequestRight = {
-      name: undefined,
-      video: undefined,
-      spotId: undefined,
-      userId: undefined,
-    }
+      this.trickRequestRight = {
+        name: undefined,
+        video: undefined,
+        spotId: undefined,
+        userId: undefined,
+      }
   }
 
+  public spots = []
+  public pageCounter = 1
   ngOnInit(): void {
     //Retrieve the infos of the user connected
     this.auth.getUser$()
@@ -54,6 +56,16 @@ export class AddtrickPage implements OnInit {
         this.user = userData
       });
     this.trickRequestRight.userId = this.user._id
+
+    //Get the spots
+    for (let i = 1; i <= this.pageCounter; i++) {
+      const urlSpots = `${environment.apiUrl}/spots?page=${i}`;
+      this.http.get<Paginated<Spot>>(urlSpots).subscribe((spots) => {
+        spots.data.forEach(spot => {
+          this.spots.push(spot)
+        });
+      });
+    }
   }
 
   onSubmit(form: NgForm) {

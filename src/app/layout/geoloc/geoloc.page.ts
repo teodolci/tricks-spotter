@@ -4,7 +4,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-import { latLng, Map, MapOptions, marker, Marker, tileLayer, icon } from 'leaflet';
+import { latLng, Map, MapOptions, marker, Marker, tileLayer, icon, Circle, circle, CircleMarker, circleMarker, LatLng } from 'leaflet';
 import { defaultIcon } from 'src/app/models/default-marker';
 
 import { Geolocation } from '@capacitor/geolocation';
@@ -38,7 +38,7 @@ export class GeolocPage implements OnInit {
 
   map: Map;
   mapOptions: MapOptions;
-  mapMarkers: Marker[];
+  mapMarkers: any[];
 
   constructor(
     // Inject the AuthService
@@ -53,7 +53,8 @@ export class GeolocPage implements OnInit {
           { maxZoom: 18 }
         )
       ],
-      zoom: 15,
+      zoom: 14,
+      minZoom: 10,
       center: latLng(46.519962, 6.633597),
       zoomControl: false,
       attributionControl: false
@@ -61,16 +62,21 @@ export class GeolocPage implements OnInit {
     this.mapMarkers = [];
   }
 
+  //Get the position of the device and place it on the map
   public coordinate = undefined
   async getDevicePosition() {
     const coordinate = await Geolocation.getCurrentPosition()
-    console.log("got position")
     this.coordinate = coordinate
+    //set device position to map
+    this.mapMarkers.unshift(marker(latLng(this.coordinate.coords.latitude, this.coordinate.coords.longitude), {
+      icon:defaultIcon
+    }))
   }
+
 
   ngOnInit() {
     this.getDevicePosition()
-    console.log(this.coordinate)
+
     // Make an HTTP request to retrieve the spots.
     const url = `${environment.apiUrl}/spots`;
     this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
@@ -85,9 +91,17 @@ export class GeolocPage implements OnInit {
           popupAnchor: [1, -34],
 
         });
-        this.mapMarkers.push(marker([spot.geolocation[0], spot.geolocation[1]], { icon: customIcon }).bindPopup(spot.name))
+        this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon }).bindPopup(spot.name))
       })
+      //Pour centrer la map sur la position du device au début
+      /* this.centerMap(this.mapMarkers[0]._latlng) */
     });
+  }
+
+  //center map to point
+  centerMap(point: LatLng) {
+    this.map.setView(point, 16)
+    //ça marche pas apparement this.map n'est pas défini, je sais pas comment faire....
   }
 
 

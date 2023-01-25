@@ -11,13 +11,8 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        redirectTo: "accueil",
+        redirectTo: "geoloc",
         pathMatch: "full",
-      },
-      {
-        // Route pour la page d'accueil
-        path: 'accueil',
-        loadChildren: () => import('./accueil/accueil.module').then(m => m.AccueilPageModule)
       },
       {
         path: 'addtrick',

@@ -17,16 +17,18 @@
       <!-- Spot input -->
       <ion-item>
         <ion-label position="floating">Spot</ion-label>
-        <ion-input inputmode="text" #spotId="ngModel" required="true" name="spotId"
-          [(ngModel)]="trickRequest.spotId"></ion-input>
-        <ion-note slot="error" *ngIf="spotId.invalid && spotId.touched">Spot nécessaire</ion-note>
+        <ion-select #spotId="ngModel" required="true" name="spotId" [(ngModel)]="trickRequest.spotId">
+          <ion-select-option *ngFor="let spot of spots" [value]="spot.name">
+            {{spot.name}}
+          </ion-select-option>
+        </ion-select>
       </ion-item>
 
       <!-- Tricks name input -->
-      <ion-item>
+      <ion-item counter="true">
         <ion-label position="floating">Nom du Tricks</ion-label>
-        <ion-input inputmode="text" #name="ngModel" required="true" name="name"
-          [(ngModel)]="trickRequest.name"></ion-input>
+        <ion-input inputmode="text" #name="ngModel" required="true" name="name" [(ngModel)]="trickRequest.name"
+          maxlength="30"></ion-input>
         <ion-note slot="error" *ngIf="name.invalid && name.touched">Nom du tricks nécessaire</ion-note>
       </ion-item>
 
