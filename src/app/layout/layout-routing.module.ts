@@ -29,7 +29,11 @@ const routes: Routes = [
         loadChildren: () => import('./profil/profil.module').then(m => m.ProfilPageModule)
       }
     ]
+  },  {
+    path: 'addspot',
+    loadChildren: () => import('./addspot/addspot.module').then( m => m.AddspotPageModule)
   }
+
 
 ];
 

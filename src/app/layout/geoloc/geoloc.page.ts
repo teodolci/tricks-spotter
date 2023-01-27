@@ -74,6 +74,7 @@ export class GeolocPage implements OnInit {
   }
 
   public pageTotal = undefined
+  public spots = []
   ngOnInit() {
     this.getDevicePosition()
 
@@ -83,7 +84,8 @@ export class GeolocPage implements OnInit {
       this.pageTotal = spots.total
       //1st page
       spots.data.forEach(spot => {
-        this.data.push(spot.name)
+        this.spotsNames.push(spot.name)
+        this.spots.push(spot)
         //Create a custom icon for the marker
         const customIcon = icon({
           iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
@@ -99,7 +101,8 @@ export class GeolocPage implements OnInit {
       for (let i = 2; i <= this.pageTotal; i++) {
         this.http.get<Paginated<Spot>>(`${url}?page=${i}`).subscribe((spots) => {
           spots.data.forEach(spot => {
-            this.data.push(spot.name)
+            this.spotsNames.push(spot.name)
+            this.spots.push(spot)
             //Create a custom icon for the marker
             const customIcon = icon({
               iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
@@ -118,8 +121,14 @@ export class GeolocPage implements OnInit {
     });
   }
 
+  //Show spot detail
+  showSpot(e){
+    const id = e.srcElement.attributes.id.nodeValue
+    console.log(id)
+  }
 
-  //toggel the list of all the spots
+
+  //toggle the list of all the spots
   public listActive = false
   toggleList() {
     this.listActive = !this.listActive
@@ -134,14 +143,14 @@ export class GeolocPage implements OnInit {
 
 
   //Manage the search bar with the names of the spots
-  public data = [];
-  public results = [...this.data];
+  public spotsNames = [];
+  public results = [...this.spotsNames];
   public focused = false;
   handleChange(event) {
     const query = event.target.value.toLowerCase();
-    this.results = this.data.filter(d => d.toLowerCase().indexOf(query) > -1);
+    this.results = this.spotsNames.filter(d => d.toLowerCase().indexOf(query) > -1);
     //Limiter à 5 elements de complétion de recherche
-    if (this.data.length >= 5) this.results = this.results.slice(0, 5)
+    if (this.spotsNames.length >= 5) this.results = this.results.slice(0, 5)
     if (this.results.length != 0) {
       this.focused = true
     } else {

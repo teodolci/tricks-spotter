@@ -18,7 +18,7 @@ ion-searchbar {
     margin-top: 10px;
 }
 
-.searchlist{
+.searchlist {
     width: 80%;
 }
 
@@ -31,4 +31,38 @@ ion-searchbar {
     right: 0;
     transform: translate(-15px, -60px);
     z-index: 1000;
+}
+
+ion-card-title {
+    font-size: 14px;
+}
+
+ion-card-subtitle {
+    font-size: 12px;
+}
+
+ion-card-content {
+    font-size: 12px;
+}
+
+.categoryIcon {
+    margin-left: 3px;
+    height: 25px;
+    width: 25px;
+}
+
+.categoryText {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+
+.card-text {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-buttons {
+    width: 50px;
 }

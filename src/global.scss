@@ -45,3 +45,9 @@ ion-alert.custom-alert .alert-button-group button {
 ion-alert.custom-alert .alert-button-group button span {
     justify-content: center;
 }
+
+.alert-radio-label.sc-ion-alert-md {
+    font-size: 14px;
+    -webkit-padding-start: 32px;
+    padding-inline-start: 32px;
+}
