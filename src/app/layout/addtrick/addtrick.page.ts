@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { AuthService } from 'src/app/auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ToastController } from '@ionic/angular';
 
 import { Trick } from 'src/app/models/trick';
 import { trickRequest } from 'src/app/models/trick-request';
@@ -32,7 +33,7 @@ export class AddtrickPage implements OnInit {
   spot: Spot
   trickError: boolean;
 
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router, private toastController: ToastController) {
     this.trickRequest = {
       name: undefined,
       video: undefined,
@@ -48,7 +49,7 @@ export class AddtrickPage implements OnInit {
   }
 
   public spots = []
-  public pageCounter = 1
+  public pageTotal = undefined
   ngOnInit(): void {
     //Retrieve the infos of the user connected
     this.auth.getUser$()
@@ -58,14 +59,22 @@ export class AddtrickPage implements OnInit {
     this.trickRequestRight.userId = this.user._id
 
     //Get the spots
-    for (let i = 1; i <= this.pageCounter; i++) {
-      const urlSpots = `${environment.apiUrl}/spots?page=${i}`;
-      this.http.get<Paginated<Spot>>(urlSpots).subscribe((spots) => {
-        spots.data.forEach(spot => {
-          this.spots.push(spot)
-        });
+    const urlSpots = `${environment.apiUrl}/spots`;
+    this.http.get<Paginated<Spot>>(urlSpots).subscribe((spots) => {
+      this.pageTotal = spots.total
+      //1st page
+      spots.data.forEach(spot => {
+        this.spots.push(spot)
       });
-    }
+      //For all the other pages
+      for (let i = 2; i <= this.pageTotal; i++) {
+        this.http.get<Paginated<Spot>>(`${urlSpots}?page=${i}`).subscribe((spots) => {
+          spots.data.forEach(spot => {
+            this.spots.push(spot)
+          })
+        })
+      }
+    });
   }
 
   onSubmit(form: NgForm) {
@@ -89,7 +98,10 @@ export class AddtrickPage implements OnInit {
         //Make the request to post the trick to API
         this.http.post<Trick>(tricksUrl, this.trickRequestRight).subscribe({
           next: () => {
-            this.router.navigateByUrl("/profil").then(() => {
+            this.presentToast().then(() => {
+              this.router.navigateByUrl("/profil")
+            })
+            .then(() => {
               window.location.reload();
             });
           },
@@ -100,8 +112,18 @@ export class AddtrickPage implements OnInit {
         });
       } else {
         this.trickError = true;
-        console.warn('Spot not existing')
       }
     });
+  }
+
+  //Function for toast message
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Nouveau tricks posté!',
+      duration: 1500,
+      position: "bottom"
+    });
+
+    await toast.present();
   }
 }

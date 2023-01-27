@@ -24,3 +24,24 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+ion-alert.custom-alert .alert-head h2{
+    font-size: 16px;
+}
+
+ion-alert.custom-alert .alert-button-confirm {
+    color: #b23b3b;
+}
+
+ion-alert.custom-alert .alert-button-group {
+    justify-content: space-between;
+}
+
+ion-alert.custom-alert .alert-button-group button {
+    width: 100px;
+    margin: 0;
+}
+
+ion-alert.custom-alert .alert-button-group button span {
+    justify-content: center;
+}

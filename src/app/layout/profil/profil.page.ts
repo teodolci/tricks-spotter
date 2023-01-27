@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from "@angular/router";
 import { AuthService } from "src/app/auth/auth.service";
 import { environment } from 'src/environments/environment';
+import { AlertController } from '@ionic/angular';
 
 //Pattern of the paginated datas
 type Paginated<T = unknown> = {
@@ -54,6 +55,7 @@ export class ProfilPage implements OnInit {
     private auth: AuthService,
     private router: Router,
     public http: HttpClient,
+    private alertController: AlertController
   ) { }
 
   public tricks = []
@@ -91,30 +93,38 @@ export class ProfilPage implements OnInit {
         this.tricks.push(trick)
       });
       //Check if everything is loaded
-      if(tricks.page * tricks.pageSize >= tricks.total) this.everythingLoaded = true
+      if (tricks.page * tricks.pageSize >= tricks.total) this.everythingLoaded = true
     });
 
 
   }
 
-  deleteTrick(event:any) {
-    const id = event.srcElement.attributes.id.nodeValue
-    const urlTricks = `${environment.apiUrl}/tricks/${id}`;
-    this.http.delete(urlTricks).subscribe({
-      next: (res) => {
-        const index = this.tricks.indexOf(res)
-        this.tricks.splice(index, 1)
-        window.location.reload()
-        console.warn("Tricks deleted")
-      },
-      error: (err) => {
-        console.warn(`Trick delete failed: ${err.message}`);
-      },
-    });
+  async deleteTrick(event: any) {
+    await this.presentAlert()
+
+    if (this.roleMessage == "confirmer") { //Supprime le tricks
+      console.log("supprimer le spot")
+      const id = event.srcElement.attributes.id.nodeValue
+      const urlTricks = `${environment.apiUrl}/tricks/${id}`;
+      this.http.delete(urlTricks).subscribe({
+        next: (res) => {
+          const index = this.tricks.indexOf(res)
+          this.tricks.splice(index, 1)
+          window.location.reload()
+          console.warn("Tricks deleted")
+        },
+        error: (err) => {
+          console.warn(`Trick delete failed: ${err.message}`);
+        },
+      });
+    } else { //Ne supprime pas le tricks
+      console.log("annulé")
+    }
   }
 
-  modifyTrick(event:any) {
-    
+
+  modifyTrick(event: any) {
+
   }
 
   loadMore() {
@@ -127,5 +137,38 @@ export class ProfilPage implements OnInit {
     console.log("logging out...");
     this.auth.logOut();
     this.router.navigateByUrl("/login");
+  }
+
+  //Manage the alert box
+  handlerMessage = '';
+  roleMessage = '';
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Vous allez supprimer un tricks!',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'annuler',
+          handler: () => {
+            this.handlerMessage = 'Annuler';
+          },
+          cssClass: 'alert-button-cancel',
+        },
+        {
+          text: 'Supprimer',
+          role: 'confirmer',
+          handler: () => {
+            this.handlerMessage = 'Confirmer';
+          },
+          cssClass: 'alert-button-confirm',
+        },
+      ],
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    this.roleMessage = `${role}`;
   }
 }

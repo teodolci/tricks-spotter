@@ -22,14 +22,13 @@ ion-searchbar {
     width: 80%;
 }
 
-.leaflet-control-layers{
-    visibility: hidden !important;
-}
-
-.spotDetails {
+.listButton {
+    width: 60px;
+    height: 30px;
+    font-size: 12px;
     position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    z-index: 999;
-    display: none;
+    top: 100%;
+    right: 0;
+    transform: translate(-15px, -60px);
+    z-index: 1000;
 }

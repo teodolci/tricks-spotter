@@ -69,17 +69,19 @@ export class GeolocPage implements OnInit {
     this.coordinate = coordinate
     //set device position to map
     this.mapMarkers.unshift(marker(latLng(this.coordinate.coords.latitude, this.coordinate.coords.longitude), {
-      icon:defaultIcon
+      icon: defaultIcon
     }))
   }
 
-
+  public pageTotal = undefined
   ngOnInit() {
     this.getDevicePosition()
 
-    // Make an HTTP request to retrieve the spots.
+    // Make an HTTP request to retrieve all the spots.
     const url = `${environment.apiUrl}/spots`;
     this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
+      this.pageTotal = spots.total
+      //1st page
       spots.data.forEach(spot => {
         this.data.push(spot.name)
         //Create a custom icon for the marker
@@ -91,12 +93,38 @@ export class GeolocPage implements OnInit {
           popupAnchor: [1, -34],
 
         });
-        this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon }).bindPopup(spot.name))
+        this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon, title: spot.name }).bindPopup(spot.name))
       })
+      //For other pages
+      for (let i = 2; i <= this.pageTotal; i++) {
+        this.http.get<Paginated<Spot>>(`${url}?page=${i}`).subscribe((spots) => {
+          spots.data.forEach(spot => {
+            this.data.push(spot.name)
+            //Create a custom icon for the marker
+            const customIcon = icon({
+              iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
+
+              iconSize: [25, 38], // size of the icon
+              iconAnchor: [12, 38],
+              popupAnchor: [1, -34],
+
+            });
+            this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon, title: spot.name }).bindPopup(spot.name))
+          })
+        })
+      }
       //Pour centrer la map sur la position du device au début
       /* this.centerMap(this.mapMarkers[0]._latlng) */
     });
   }
+
+
+  //toggel the list of all the spots
+  public listActive = false
+  toggleList() {
+    this.listActive = !this.listActive
+  }
+
 
   //center map to point
   centerMap(point: LatLng) {

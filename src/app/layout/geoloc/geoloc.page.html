@@ -4,26 +4,20 @@
 <ion-content>
   <div class="map" leaflet [leafletOptions]="mapOptions" (leafletMapReady)="onMapReady($event)"
     [leafletLayers]="mapMarkers"></div>
+
   <div class="searchbar">
     <ion-searchbar color="primary" show-clear-button="focus" animated="true" placeholder="Search"
       (ionChange)="handleChange($event)" (ionFocus)="handleFocus()" (ionBlur)="handleBlur()"></ion-searchbar>
     <ion-list class="searchlist" *ngIf="focused">
-      <ion-item button *ngFor="let result of results" >
+      <ion-item button *ngFor="let result of results">
         <ion-label>{{ result }}</ion-label>
       </ion-item>
     </ion-list>
   </div>
 
-  <ion-card class="spotDetails" >
-    <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-    <ion-card-header>
-      <ion-card-title>Card Title</ion-card-title>
-      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-    </ion-card-header>
+  <ion-button class="listButton" (click)="toggleList()">
+    <ion-icon name="list"></ion-icon>
+  </ion-button>
 
-    <ion-card-content>
-      Here's a small text description for the card content. Nothing more, nothing less.
-    </ion-card-content>
-  </ion-card>
-
+  
 </ion-content>
