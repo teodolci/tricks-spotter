@@ -9,7 +9,7 @@
     <ion-searchbar color="primary" show-clear-button="focus" animated="true" placeholder="Search"
       (ionChange)="handleChange($event)" (ionFocus)="handleFocus()" (ionBlur)="handleBlur()"></ion-searchbar>
     <ion-list class="searchlist" *ngIf="focused">
-      <ion-item button *ngFor="let result of results">
+      <ion-item button *ngFor="let result of resultsLimited">
         <ion-label>{{ result }}</ion-label>
       </ion-item>
     </ion-list>

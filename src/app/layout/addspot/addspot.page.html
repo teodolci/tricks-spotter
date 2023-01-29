@@ -1,9 +1,59 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>addspot</ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-toolbar>
+    <ion-title>Ajouter un Spot</ion-title>
+  </ion-toolbar>
+  <form #spotForm="ngForm" (submit)="onSubmit(spotForm)">
+    <ion-list>
 
+      <!-- Spot name input -->
+      <ion-item counter="true">
+        <ion-label position="floating">Nom</ion-label>
+        <ion-input inputmode="text" #name="ngModel" required="true" name="name" [(ngModel)]="spotRequest.name"
+          maxlength="30"></ion-input>
+        <ion-note slot="error" *ngIf="name.invalid && name.touched">Nom nécessaire</ion-note>
+      </ion-item>
+
+      <!-- description input -->
+      <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-textarea [autoGrow]="true" #description="ngModel" required="true" name="description"
+          [(ngModel)]="spotRequest.description" maxlength="350"></ion-textarea>
+        <ion-note slot="error" *ngIf="description.invalid && description.touched">Description nécessaire</ion-note>
+      </ion-item>
+
+      <!-- Category input -->
+      <ion-item>
+        <ion-label position="floating">Categories</ion-label>
+        <ion-select [multiple]="true" #category="ngModel" required="true" name="category"
+          [(ngModel)]="spotRequest.category">
+          <ion-select-option *ngFor="let categorie of categories" [value]="categorie">
+            {{categorie}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Position input -->
+      <ion-item>
+        <ion-label position="floating">Position</ion-label>
+        <div class="map" leaflet [leafletOptions]="mapOptions" (leafletMapReady)="onMapReady($event)"
+          [leafletLayers]="mapMarkers"></div>
+      </ion-item>
+
+      <!-- Picture input -->
+      <ion-item class="picture">
+        <ion-button class="pictureButton" fill="clear" (click)="takePicture()">Prendre une photo</ion-button>
+        <img *ngIf="picture" [src]="picture.url"/>
+        <ion-note slot="error" *ngIf="!picture">Photo nécessaire</ion-note>
+      </ion-item>
+
+      <div class="ion-padding">
+        <!-- Submit button -->
+        <ion-button type="submit" [disabled]="spotForm.invalid">Ajouter le Spot</ion-button>
+        <ion-note class="spotError" color="danger" slot="error" *ngIf="spotError">Something wrong</ion-note>
+      </div>
+    </ion-list>
+  </form>
 </ion-content>

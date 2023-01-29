@@ -16,7 +16,7 @@ const routes: Routes = [
       },
       {
         path: 'addtrick',
-        loadChildren: () => import('./addtrick/addtrick.module').then( m => m.AddtrickPageModule)
+        loadChildren: () => import('./addtrick/addtrick.module').then(m => m.AddtrickPageModule)
       },
       {
         // Route pour la page de géolocalisation
@@ -27,12 +27,14 @@ const routes: Routes = [
         // Route pour la page de profil
         path: 'profil',
         loadChildren: () => import('./profil/profil.module').then(m => m.ProfilPageModule)
+      },
+      {
+        path: 'addspot',
+        loadChildren: () => import('./addspot/addspot.module').then(m => m.AddspotPageModule)
       }
     ]
-  },  {
-    path: 'addspot',
-    loadChildren: () => import('./addspot/addspot.module').then( m => m.AddspotPageModule)
-  }
+  },
+
 
 
 ];

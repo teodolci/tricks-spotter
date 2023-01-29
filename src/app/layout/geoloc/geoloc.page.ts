@@ -4,7 +4,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-import { latLng, Map, MapOptions, marker, Marker, tileLayer, icon, Circle, circle, CircleMarker, circleMarker, LatLng } from 'leaflet';
+import { latLng, Map, MapOptions, marker, Marker, tileLayer, icon, LatLng } from 'leaflet';
 import { defaultIcon } from 'src/app/models/default-marker';
 
 import { Geolocation } from '@capacitor/geolocation';
@@ -77,52 +77,12 @@ export class GeolocPage implements OnInit {
   public spots = []
   ngOnInit() {
     this.getDevicePosition()
+    this.getSpots()
 
-    // Make an HTTP request to retrieve all the spots.
-    const url = `${environment.apiUrl}/spots`;
-    this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
-      this.pageTotal = spots.total
-      //1st page
-      spots.data.forEach(spot => {
-        this.spotsNames.push(spot.name)
-        this.spots.push(spot)
-        //Create a custom icon for the marker
-        const customIcon = icon({
-          iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
-
-          iconSize: [25, 38], // size of the icon
-          iconAnchor: [12, 38],
-          popupAnchor: [1, -34],
-
-        });
-        this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon, title: spot.name }).bindPopup(spot.name))
-      })
-      //For other pages
-      for (let i = 2; i <= this.pageTotal; i++) {
-        this.http.get<Paginated<Spot>>(`${url}?page=${i}`).subscribe((spots) => {
-          spots.data.forEach(spot => {
-            this.spotsNames.push(spot.name)
-            this.spots.push(spot)
-            //Create a custom icon for the marker
-            const customIcon = icon({
-              iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
-
-              iconSize: [25, 38], // size of the icon
-              iconAnchor: [12, 38],
-              popupAnchor: [1, -34],
-
-            });
-            this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon, title: spot.name }).bindPopup(spot.name))
-          })
-        })
-      }
-      //Pour centrer la map sur la position du device au début
-      /* this.centerMap(this.mapMarkers[0]._latlng) */
-    });
   }
 
   //Show spot detail
-  showSpot(e){
+  showSpot(e) {
     const id = e.srcElement.attributes.id.nodeValue
     console.log(id)
   }
@@ -146,12 +106,15 @@ export class GeolocPage implements OnInit {
   public spotsNames = [];
   public results = [...this.spotsNames];
   public focused = false;
+  public resultsLimited = []
   handleChange(event) {
     const query = event.target.value.toLowerCase();
     this.results = this.spotsNames.filter(d => d.toLowerCase().indexOf(query) > -1);
     //Limiter à 5 elements de complétion de recherche
-    if (this.spotsNames.length >= 5) this.results = this.results.slice(0, 5)
-    if (this.results.length != 0) {
+    if (this.spotsNames.length >= 5){
+      this.resultsLimited = this.results.slice(0, 5)
+    } 
+    if (this.resultsLimited.length != 0) {
       this.focused = true
     } else {
       this.focused = false
@@ -162,6 +125,18 @@ export class GeolocPage implements OnInit {
   }
   handleBlur() {
     this.focused = false
+    this.getSpots()
+    console.log(this.spots)
+    if (this.results.length > 0) { //If there is something in the results of search do smthn
+      this.spots.forEach(spot => {
+        
+        if (!this.results.includes(spot.name)) {
+          const index = this.spots.indexOf(spot)
+          this.spots.splice(index, 1)
+          console.log(this.spots[index])
+        }
+      })
+    }
   }
 
 
@@ -170,4 +145,45 @@ export class GeolocPage implements OnInit {
     setTimeout(() => map.invalidateSize(), 0);
   }
 
+
+  //Retrieve spots
+  getSpots() {
+    // Make an HTTP request to retrieve all the spots.
+    const url = `${environment.apiUrl}/spots`;
+    this.spots = []
+    this.spotsNames = []
+    this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
+      this.pageTotal = spots.total
+      //1st page
+      spots.data.forEach(spot => {
+        this.spotsNames.push(spot.name)
+        this.spots.push(spot)
+        this.setMarkers(spot)
+      })
+      //For other pages
+      for (let i = 2; i <= this.pageTotal; i++) {
+        this.http.get<Paginated<Spot>>(`${url}?page=${i}`).subscribe((spots) => {
+          spots.data.forEach(spot => {
+            this.spotsNames.push(spot.name)
+            this.spots.push(spot)
+            this.setMarkers(spot)
+          })
+        })
+      }
+    });
+  }
+
+  //Set markers
+  setMarkers(spot: Spot) {
+    //Create a custom icon for the marker
+    const customIcon = icon({
+      iconUrl: `assets/icon/markers/${spot.category[0]}-marqueur.png`,
+
+      iconSize: [25, 38], // size of the icon
+      iconAnchor: [12, 38],
+      popupAnchor: [1, -34],
+
+    });
+    this.mapMarkers.push(marker(latLng(spot.geolocation[0], spot.geolocation[1]), { icon: customIcon, title: spot.name }).bindPopup(spot.name))
+  }
 }
