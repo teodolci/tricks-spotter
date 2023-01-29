@@ -34,10 +34,9 @@
 
       <!-- Video input -->
       <ion-item>
-        <ion-label position="floating">Video</ion-label>
-        <ion-input inputmode="text" #video="ngModel" required="true" name="video"
-          [(ngModel)]="trickRequest.video"></ion-input>
-        <ion-note slot="error" *ngIf="video.invalid && video.touched">Vidéo nécessaire</ion-note>
+        <ion-button class="videoButton" fill="clear" (click)="takeVideo()">Prendre une vidéo</ion-button>
+        <img *ngIf="video" [src]="video.url"/>
+        <ion-note slot="error" *ngIf="!video">Vidéo nécessaire</ion-note>
       </ion-item>
 
       <div class="ion-padding">

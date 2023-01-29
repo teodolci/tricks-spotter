@@ -11,6 +11,9 @@ import { trickRequest } from 'src/app/models/trick-request';
 import { User } from 'src/app/models/user';
 import { Spot } from 'src/app/models/spot';
 
+import { PictureService } from 'src/app/picture/picture.service';
+import { QimgImage } from 'src/app/models/Qimg-response';
+
 //Pattern of the paginated datas
 type Paginated<T = unknown> = {
   data: T[],
@@ -33,7 +36,9 @@ export class AddtrickPage implements OnInit {
   spot: Spot
   trickError: boolean;
 
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router, private toastController: ToastController) {
+  video: QimgImage
+
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router, private toastController: ToastController, private pictureService: PictureService) {
     this.trickRequest = {
       name: undefined,
       video: undefined,
@@ -86,6 +91,8 @@ export class AddtrickPage implements OnInit {
     // Hide any previous login error.
     this.trickError = false;
 
+    this.trickRequest.video = /* this.video.url ?? */ "video.mp4"   //I actually don't know where to stock videos
+
     const tricksUrl = `${environment.apiUrl}/tricks`;
     const spotUrl = `${environment.apiUrl}/spots`;
     //Transform the spot name to _id
@@ -101,9 +108,9 @@ export class AddtrickPage implements OnInit {
             this.presentToast().then(() => {
               this.router.navigateByUrl("/profil")
             })
-            .then(() => {
-              window.location.reload();
-            });
+              .then(() => {
+                window.location.reload();
+              });
           },
           error: (err) => {
             this.trickError = true;
@@ -125,5 +132,12 @@ export class AddtrickPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //Open camera to take video
+  takeVideo(){
+    this.pictureService.takeAndUploadPicture().subscribe(
+      res => this.video = res
+      )
   }
 }

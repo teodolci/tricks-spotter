@@ -7,33 +7,32 @@
     <ion-list>
       <!-- Username input -->
       <ion-item>
-        <ion-label position="floating">Username</ion-label>
+        <ion-label position="floating">Pseudo</ion-label>
         <ion-input inputmode="text" #userName="ngModel" required="true" name="userName"
           [(ngModel)]="authRequest.userName"></ion-input>
-        <ion-note slot="error" *ngIf="userName.invalid && userName.touched">Username is required</ion-note>
+        <ion-note slot="error" *ngIf="userName.invalid && userName.touched">Pseudo nécessaire</ion-note>
       </ion-item>
 
       <!-- Password input -->
       <ion-item>
-        <ion-label position="floating">Password</ion-label>
+        <ion-label position="floating">Mot de passe</ion-label>
         <ion-input inputmode="text" #password="ngModel" required="true" type="password" name="password"
           [(ngModel)]="authRequest.password"></ion-input>
-        <ion-note slot="error" *ngIf="password.invalid && password.touched">Password is required</ion-note>
+        <ion-note slot="error" *ngIf="password.invalid && password.touched">Mot de passe nécessaire</ion-note>
       </ion-item>
     </ion-list>
 
     <div class="ion-padding">
       <!-- Submit button -->
-      <ion-button type="submit" [disabled]="loginForm.invalid">Log in</ion-button>
-      <ion-note class="loginError" color="danger" slot="error" *ngIf="loginError">Username or password is
-        invalid</ion-note>
+      <ion-button type="submit" [disabled]="loginForm.invalid">Se connecter</ion-button>
+      <ion-note class="loginError" color="danger" slot="error" *ngIf="loginError">Pseudo ou Mot de passe invalid</ion-note>
     </div>
   </form>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar class="signup-footer" color="primary">
-    <ion-label class="signup-label">Don't have an account yet?</ion-label>
+    <ion-label class="signup-label">Pas encore de compte?</ion-label>
     <ion-buttons class="signup-button" slot="end">
       <ion-button [routerLink]="['/signup']" fill="clear">SIGNUP</ion-button>
     </ion-buttons>

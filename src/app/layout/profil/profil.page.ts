@@ -4,6 +4,10 @@ import { Router } from "@angular/router";
 import { AuthService } from "src/app/auth/auth.service";
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
+import { NgForm } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
+
+import { SignupRequest } from 'src/app/models/signup-request';
 
 //Pattern of the paginated datas
 type Paginated<T = unknown> = {
@@ -41,6 +45,17 @@ declare type Spot = {
   creationDate: Date;
 };
 
+declare type modifUser = {
+  firstName: string,
+  lastName: string,
+  userName: string
+}
+
+declare type TrickModif = {
+  name: string;
+  video: string;
+}
+
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.page.html',
@@ -51,12 +66,29 @@ export class ProfilPage implements OnInit {
   spot: any
   userTrick: any
 
+  modifRequest: TrickModif
+  modifError: boolean;
+
+  modifUserRequest: modifUser
+  modifUserError: boolean
+
   constructor(
     private auth: AuthService,
     private router: Router,
     public http: HttpClient,
-    private alertController: AlertController
-  ) { }
+    private alertController: AlertController,
+    private toastController: ToastController
+  ) {
+    this.modifRequest = {
+      name: "",
+      video: ""
+    }
+    this.modifUserRequest = {
+      firstName: "",
+      lastName: "",
+      userName: ""
+    }
+  }
 
   public tricks = []
   public pageCounter = 1
@@ -67,6 +99,10 @@ export class ProfilPage implements OnInit {
       .subscribe(userData => {
         this.user = userData
       });
+    const userUrl = `${environment.apiUrl}/users/${this.user._id}`;
+    this.http.get<User>(userUrl).subscribe((user) => {
+      this.user = user
+    })
 
     //Retrieve all the tricks of the user connected
     this.getTricksPage(this.pageCounter)
@@ -95,10 +131,9 @@ export class ProfilPage implements OnInit {
       //Check if everything is loaded
       if (tricks.page * tricks.pageSize >= tricks.total) this.everythingLoaded = true
     });
-
-
   }
 
+  //Delete a tricks
   async deleteTrick(event: any) {
     await this.presentAlert()
 
@@ -122,9 +157,21 @@ export class ProfilPage implements OnInit {
     }
   }
 
-
+  //Modify a tricks
+  public modifView = false
+  public id = undefined
   modifyTrick(event: any) {
+    this.modifView = true
+    this.id = event.srcElement.attributes.id.nodeValue
+    //Retrieve the infos of the spot to modify
+    const trickUrl = `${environment.apiUrl}/tricks/${this.id}`
+    this.http.get<Trick>(trickUrl).subscribe((trick) => {
+      this.modifRequest = { name: trick.name, video: trick.video }
+    })
+  }
 
+  toggleView() {
+    this.modifView = !this.modifView
   }
 
   loadMore() {
@@ -170,5 +217,96 @@ export class ProfilPage implements OnInit {
 
     const { role } = await alert.onDidDismiss();
     this.roleMessage = `${role}`;
+  }
+
+  //Handle the submit to modify a trick
+  onSubmit(form: NgForm) {
+    // Do not do anything if the form is invalid.
+    if (form.invalid) {
+      return;
+    }
+
+    // Hide any previous login error.
+    this.modifError = false;
+
+    const tricksUrl = `${environment.apiUrl}/tricks/${this.id}`;
+    this.http.put(tricksUrl, this.modifRequest).subscribe({
+      next: () => {
+        this.presentToast().then(() => {
+          this.modifView = false
+        })
+          .then(() => {
+            window.location.reload();
+          });
+      },
+      error: (err) => {
+        this.modifError = true;
+        console.warn(`Trick modify failed: ${err.message}`);
+      },
+    });
+  }
+
+  public modifUser = false
+  //Modify profile of user
+  modifProfile() {
+    this.toggleUserModif()
+    this.modifUserRequest = {
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      userName: this.user.userName
+    }
+  }
+
+  toggleUserModif() {
+    this.modifUser = !this.modifUser
+  }
+
+  //Handle modif of a user
+  onUserSubmit(form: NgForm) {
+    // Do not do anything if the form is invalid.
+    if (form.invalid) {
+      return;
+    }
+
+    // Hide any previous login error.
+    this.modifUserError = false;
+
+    const userUrl = `${environment.apiUrl}/users/${this.user._id}`;
+    this.http.put(userUrl, this.modifUserRequest).subscribe({
+      next: (res) => {
+        this.presentToastUser().then(() => {
+          this.modifUser = false
+        })
+          .then(() => {
+            window.location.reload();
+          });
+      },
+      error: (err) => {
+        this.modifError = true;
+        console.warn(`User modify failed: ${err.message}`);
+      },
+    });
+  }
+
+  //Function for toast message
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Tricks modifié!',
+      duration: 1500,
+      position: "bottom"
+    });
+
+    await toast.present();
+  }
+
+  //Function for toast message
+  async presentToastUser() {
+    const toast = await this.toastController.create({
+      message: 'Profil modifié!',
+      duration: 1500,
+      position: "bottom"
+    });
+
+    await toast.present();
   }
 }

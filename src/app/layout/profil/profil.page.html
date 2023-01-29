@@ -1,5 +1,11 @@
 <ion-header>
   <ion-toolbar>
+    <!-- Modify profile button -->
+    <ion-buttons slot="start">
+      <ion-button (click)="modifProfile()">
+        <ion-icon class="modifProfileIcon" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <!-- Logout button -->
     <ion-buttons slot="end">
       <ion-button (click)="logOut()">
@@ -51,7 +57,95 @@
     </div>
   </ion-card>
 
+  <!-- Modal to modify a tricks -->
+  <ion-modal [isOpen]="modifView">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modifier le Tricks</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="toggleView()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+
+        <form #modifForm="ngForm" (submit)="onSubmit(modifForm)">
+          <ion-list>
+            <!-- Tricks name input -->
+            <ion-item counter="true">
+              <ion-label position="floating">Nom</ion-label>
+              <ion-input inputmode="text" #name="ngModel" required="true" name="name" [(ngModel)]="modifRequest.name"
+                maxlength="30"></ion-input>
+            </ion-item>
+
+            <!-- Video input -->
+            <ion-item>
+              <ion-label position="floating">Video</ion-label>
+              <ion-input inputmode="text" #video="ngModel" required="true" name="video"
+                [(ngModel)]="modifRequest.video"></ion-input>
+            </ion-item>
+
+            <div class="ion-padding">
+              <!-- Submit button -->
+              <ion-button type="submit" [disabled]="modifForm.invalid">Modifier le Tricks</ion-button>
+              <ion-note class="trickError" color="danger" slot="error" *ngIf="modifError">Something wrong</ion-note>
+            </div>
+          </ion-list>
+        </form>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
   <!-- To load more tricks -->
   <ion-button *ngIf="!everythingLoaded" class="more" (click)="loadMore()" fill="clear">plus</ion-button>
+
+  <!-- Modal to modify a user's information -->
+  <ion-modal [isOpen]="modifUser">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modifier le Profil</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="toggleUserModif()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+
+        <form #modifUserForm="ngForm" (submit)="onUserSubmit(modifUserForm)">
+          <ion-list>
+            <!-- User first name input -->
+            <ion-item counter="true">
+              <ion-label position="floating">Prénom</ion-label>
+              <ion-input inputmode="text" #firstName="ngModel" required="true" name="firstName" [(ngModel)]="modifUserRequest.firstName"></ion-input>
+            </ion-item>
+
+            <!-- User last name input -->
+            <ion-item>
+              <ion-label position="floating">Nom de famille</ion-label>
+              <ion-input inputmode="text" #lastName="ngModel" required="true" name="lastName"
+                [(ngModel)]="modifUserRequest.lastName"></ion-input>
+            </ion-item>
+
+            <!-- User pseudo input -->
+            <ion-item>
+              <ion-label position="floating">Pseudo</ion-label>
+              <ion-input inputmode="text" #userName="ngModel" required="true" name="userName"
+                [(ngModel)]="modifUserRequest.userName"></ion-input>
+            </ion-item>
+
+            <div class="ion-padding">
+              <!-- Submit button -->
+              <ion-button type="submit" [disabled]="modifUserForm.invalid">Modifier le Profil</ion-button>
+              <ion-note class="userError" color="danger" slot="error" *ngIf="modifUserError">Something wrong</ion-note>
+            </div>
+          </ion-list>
+        </form>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
 </ion-content>

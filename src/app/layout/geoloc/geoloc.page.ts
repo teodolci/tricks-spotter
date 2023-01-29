@@ -35,6 +35,7 @@ declare type Spot = {
 export class GeolocPage implements OnInit {
 
   spot: Spot;
+  spots: Spot[];
 
   map: Map;
   mapOptions: MapOptions;
@@ -73,12 +74,11 @@ export class GeolocPage implements OnInit {
     }))
   }
 
-  public pageTotal = undefined
-  public spots = []
-  ngOnInit() {
-    this.getDevicePosition()
-    this.getSpots()
-
+  public spotTotal = undefined
+  // On page initialisation
+  async ngOnInit() {
+    await this.getDevicePosition()
+    this.getSpots(this.results)
   }
 
   //Show spot detail
@@ -111,9 +111,9 @@ export class GeolocPage implements OnInit {
     const query = event.target.value.toLowerCase();
     this.results = this.spotsNames.filter(d => d.toLowerCase().indexOf(query) > -1);
     //Limiter à 5 elements de complétion de recherche
-    if (this.spotsNames.length >= 5){
+    if (this.spotsNames.length >= 5) {
       this.resultsLimited = this.results.slice(0, 5)
-    } 
+    }
     if (this.resultsLimited.length != 0) {
       this.focused = true
     } else {
@@ -125,18 +125,7 @@ export class GeolocPage implements OnInit {
   }
   handleBlur() {
     this.focused = false
-    this.getSpots()
-    console.log(this.spots)
-    if (this.results.length > 0) { //If there is something in the results of search do smthn
-      this.spots.forEach(spot => {
-        
-        if (!this.results.includes(spot.name)) {
-          const index = this.spots.indexOf(spot)
-          this.spots.splice(index, 1)
-          console.log(this.spots[index])
-        }
-      })
-    }
+    this.getSpots(this.results)
   }
 
 
@@ -147,30 +136,37 @@ export class GeolocPage implements OnInit {
 
 
   //Retrieve spots
-  getSpots() {
+  public tricksSpot = 0
+  getSpots(filter: string[]) {
+    this.spots = []
+    this.mapMarkers = []
     // Make an HTTP request to retrieve all the spots.
     const url = `${environment.apiUrl}/spots`;
-    this.spots = []
-    this.spotsNames = []
     this.http.get<Paginated<Spot>>(url).subscribe((spots) => {
-      this.pageTotal = spots.total
-      //1st page
-      spots.data.forEach(spot => {
-        this.spotsNames.push(spot.name)
-        this.spots.push(spot)
-        this.setMarkers(spot)
-      })
-      //For other pages
-      for (let i = 2; i <= this.pageTotal; i++) {
+      this.spotTotal = spots.total
+      //For each page get the spots
+      for (let i = 1; i <= Math.ceil(this.spotTotal/10); i++) {
         this.http.get<Paginated<Spot>>(`${url}?page=${i}`).subscribe((spots) => {
           spots.data.forEach(spot => {
-            this.spotsNames.push(spot.name)
-            this.spots.push(spot)
-            this.setMarkers(spot)
+            this.http.get<Paginated<Spot>>(`${url}/${spot._id}/tricks`).subscribe((tricks) => {
+              this.tricksSpot = tricks.total
+            })
+            if (filter.length > 0) {// Filter with the results of the searchBar
+              if (this.results.includes(spot.name)) {
+                this.spots.push(spot)
+                this.setMarkers(spot)
+              }
+            } else {
+              this.spotsNames.push(spot.name)
+              this.spots.push(spot)
+              this.setMarkers(spot)
+            }
           })
         })
       }
     });
+    //Set the device position again
+    this.getDevicePosition()
   }
 
   //Set markers

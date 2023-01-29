@@ -20,7 +20,15 @@ ion-header {
     color: #b23b3b;
 }
 
+.modifProfileIcon {
+    color: #A9957B;
+}
+
 ///////////////////////////////////////////////// CONTENT
+ 
+form {
+margin-top: 50px;
+}
 
 ion-content ion-title {
     margin-top: 15px;
@@ -85,4 +93,10 @@ ion-card-content {
 
 .deleteIcon {
     color: #b23b3b;
+}
+
+.ion-padding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
