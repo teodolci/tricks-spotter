@@ -9,7 +9,7 @@ Au lancement, l'utilisateur peut soit se connecter à un compte existant, soit c
 
 ### User Lambda
 Un user connecté est dirigé sur la page des spots qui est une map qui contient:
-- des marqueurs (les icônes sont les catégories des spots) de chaque spot à son emplacement, plus un marqueur qui représente la position de l'appareil de l'utilisateur.  
+- Des marqueurs (les icônes sont les catégories des spots) de chaque spot à son emplacement, plus un marqueur qui représente la position de l'appareil de l'utilisateur.  
 - En haut de la carte il y'a une barre de recherche dans laquelle l'utiliateur peut filtrer les spots par nom. La carte est dynamique et se met à jour avec les spots filtrés quand on quitte la barre de recherche. Si la barre est vide, tous les spots sont affichés.
 - Dans le coin à droite de la carte, il y'a un bouton pour voir la liste de tous les spots. Dans la liste des spots, on peut cliquer sur le bouton d'info, qui ouvre les détail du spot sur lequel on a cliqué, avec les tricks postés par tous les utilisateurs sur ce spot en question. Les infos des listes sont paginées à 10 éléments, l'utilisateur peut cliquer sur le bouton "Plus" en bas des listes pour charger les 10 éléments suivants. Si tout est chargé, le bouton n'apparait pas.
 
