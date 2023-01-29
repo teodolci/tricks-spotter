@@ -97,28 +97,34 @@ export class AddtrickPage implements OnInit {
     const spotUrl = `${environment.apiUrl}/spots`;
     //Transform the spot name to _id
     this.http.get<Paginated<Spot>>(`${spotUrl}`).subscribe((spots) => {
-      const found = spots.data.find(element => element.name == this.trickRequest.spotId)
-      if (found) {
-        this.trickRequestRight.spotId = found._id
-        this.trickRequestRight.name = this.trickRequest.name.charAt(0).toUpperCase() + this.trickRequest.name.slice(1)
-        this.trickRequestRight.video = this.trickRequest.video
-        //Make the request to post the trick to API
-        this.http.post<Trick>(tricksUrl, this.trickRequestRight).subscribe({
-          next: () => {
-            this.presentToast().then(() => {
-              this.router.navigateByUrl("/profil")
-            })
-              .then(() => {
-                window.location.reload();
-              });
-          },
-          error: (err) => {
-            this.trickError = true;
-            console.warn(`Trick post failed: ${err.message}`);
-          },
-        });
-      } else {
-        this.trickError = true;
+      const spotTotal = spots.total
+      let found = undefined
+      let alreadyDone = false
+      for (let i = 1; i <= Math.ceil(spotTotal / 10); i++) {
+        this.http.get<Paginated<Spot>>(`${spotUrl}?page=${i}`).subscribe((spots) => {
+          found = spots.data.find(element => element.name == this.trickRequest.spotId)
+          if (found && !alreadyDone) {
+            alreadyDone = true
+            this.trickRequestRight.spotId = found._id
+            this.trickRequestRight.name = this.trickRequest.name.charAt(0).toUpperCase() + this.trickRequest.name.slice(1)
+            this.trickRequestRight.video = this.trickRequest.video
+            //Make the request to post the trick to API
+            this.http.post<Trick>(tricksUrl, this.trickRequestRight).subscribe({
+              next: () => {
+                this.presentToast().then(() => {
+                  this.router.navigateByUrl("/profil")
+                })
+                  .then(() => {
+                    window.location.reload();
+                  });
+              },
+              error: (err) => {
+                this.trickError = true;
+                console.warn(`Trick post failed: ${err.message}`);
+              },
+            });
+          }
+        })
       }
     });
   }
@@ -135,9 +141,9 @@ export class AddtrickPage implements OnInit {
   }
 
   //Open camera to take video
-  takeVideo(){
+  takeVideo() {
     this.pictureService.takeAndUploadPicture().subscribe(
       res => this.video = res
-      )
+    )
   }
 }

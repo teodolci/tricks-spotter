@@ -18,6 +18,8 @@
   <ion-button class="listButton" (click)="toggleList()">
     <ion-icon name="list"></ion-icon>
   </ion-button>
+
+  <!-- Modal of spot list -->
   <ion-modal [isOpen]="listActive">
     <ng-template>
       <ion-header>
@@ -34,8 +36,9 @@
         <ion-card *ngFor="let spot of spots">
           <img class="miniature" alt="Silhouette of mountains"
             src="https://ionicframework.com/docs/img/demos/card-media.png" />
-          <div class="card-text">
-            <div>
+          <!-- {{spot.picture}} en src de l'image -->
+          <div class="card-content">
+            <div class="card-text">
               <ion-card-header>
                 <ion-card-title>{{spot.name}}</ion-card-title>
                 <div class="categoryContainer">
@@ -49,18 +52,149 @@
                 {{spot.creationDate | date: 'dd.MM.yyyy'}}
               </ion-card-content>
             </div>
-
             <!-- More info button -->
             <div class="card-buttons">
               <ion-button id={{spot._id}} fill="clear" (click)="showSpot($event)">
                 <ion-icon class="infoIcon" name="information-circle-outline"></ion-icon>
               </ion-button>
+              <ion-button *ngIf="isAdmin" id={{spot._id}} fill="clear" (click)="deleteSpot($event)">
+                <ion-icon class="deleteIcon" name="trash-outline"></ion-icon>
+              </ion-button>
             </div>
-
           </div>
+
         </ion-card>
       </ion-content>
     </ng-template>
   </ion-modal>
 
+
+  <!-- Modal for the details of a spot -->
+  <ion-modal [isOpen]="spotDetailActive">
+    <ng-template>
+      <ion-header class="detailHeader">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button *ngIf="isAdmin" id={{spotDetails._id}} (click)="modifSpot($event)">
+              <ion-icon class="modifSpotIcon" name="settings-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-buttons slot="end">
+            <ion-button (click)="toggleDetails()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-title>{{spotDetails.name}}</ion-title>
+        <img class="photoSpot" alt="Silhouette of mountains"
+          src="https://ionicframework.com/docs/img/demos/card-media.png" /> <!-- {{spotDetails.picture}} en src -->
+        <div class="categoryContainer detailsContainer">
+          <span class="categoryText detailsText" *ngFor="let category of spotDetails.category">
+            {{category}}
+            <img class="categoryIcon" src="assets/icon/spots/{{category}}.png">
+          </span>
+        </div>
+        <div class="descriptionDetails">
+          {{spotDetails.description}}
+        </div>
+        <ion-label class="labelDetails">{{spotDetails.geolocation[0]}}, {{spotDetails.geolocation[1]}}</ion-label>
+        <br>
+        <ion-label class="labelDetails">{{spotDetails.creationDate | date: 'dd.MM.yyyy'}}</ion-label>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-title>
+          Tricks postés
+        </ion-title>
+        <!-- The cards to see the tricks -->
+        <ion-card class="detailsTrick" *ngFor="let trick of tricks">
+          <img class="miniature" src="https://ionicframework.com/docs/img/demos/card-media.png"
+            (click)="launchVideo($event)" />
+          <!-- Si j'avais réussi à uploader les images, j'aurais mis {{trick.video}} en src -->
+          <div class="card-text">
+            <ion-card-header>
+              <ion-card-title>{{trick.name}}</ion-card-title>
+              <ion-card-subtitle>{{trick.spotName}}</ion-card-subtitle>
+              <div class="categoryContainer">
+                <img *ngFor="let category of trick.categories" class="categoryIcon"
+                  src="assets/icon/spots/{{category}}.png">
+              </div>
+            </ion-card-header>
+            <ion-card-content>
+              @{{trick.userName}} <br>
+              {{trick.creationDate | date: 'dd.MM.yyyy'}}
+            </ion-card-content>
+          </div>
+        </ion-card>
+        <!-- To load more tricks -->
+        <ion-button *ngIf="!everythingLoaded" class="more" (click)="loadMore()" fill="clear">plus</ion-button>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal to modify a spot -->
+  <ion-modal [isOpen]="modifView">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modifier le Spot</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="toggleView()">Fermer</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+
+        <form #modifForm="ngForm" (submit)="onSubmit(modifForm)">
+          <ion-list>
+            <!-- Spot name input -->
+            <ion-item counter="true">
+              <ion-label position="floating">Nom</ion-label>
+              <ion-input inputmode="text" #name="ngModel" required="true" name="name" [(ngModel)]="modifRequest.name"
+                maxlength="30"></ion-input>
+            </ion-item>
+
+            <!-- description input -->
+            <ion-item>
+              <ion-label position="floating">Description</ion-label>
+              <ion-textarea [autoGrow]="true" #description="ngModel" required="true" name="description"
+                [(ngModel)]="modifRequest.description" maxlength="350"></ion-textarea>
+              <ion-note slot="error" *ngIf="description.invalid && description.touched">Description
+                nécessaire</ion-note>
+            </ion-item>
+
+            <!-- Category input -->
+            <ion-item>
+              <ion-label position="floating">Categories</ion-label>
+              <ion-select [multiple]="true" #category="ngModel" required="true" name="category"
+                [(ngModel)]="modifRequest.category">
+                <ion-select-option *ngFor="let categorie of categories" [value]="categorie">
+                  {{categorie}}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <!-- Position input -->
+            <ion-item>
+              <ion-label position="floating">Position</ion-label>
+              <div class="map" leaflet [leafletOptions]="mapOptionsModif" (leafletMapReady)="onMapReady($event)"
+                [leafletLayers]="mapMarkersModif"></div>
+            </ion-item>
+
+            <!-- Picture input -->
+            <ion-item>
+              <ion-label position="floating">Photo</ion-label>
+              <ion-input inputmode="text" #picture="ngModel" required="true" name="picture"
+                [(ngModel)]="modifRequest.picture"></ion-input>
+            </ion-item>
+
+            <div class="ion-padding">
+              <!-- Submit button -->
+              <ion-button type="submit" [disabled]="modifForm.invalid">Modifier le Spot</ion-button>
+              <ion-note class="trickError" color="danger" slot="error" *ngIf="modifError">Something wrong</ion-note>
+            </div>
+          </ion-list>
+        </form>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

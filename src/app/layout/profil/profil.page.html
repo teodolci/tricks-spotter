@@ -14,14 +14,13 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <!-- Profile image and user names -->
+  <!-- Profile names -->
   <ion-item class="userInfo" lines="none">
     <ion-label>
       <ion-label class="name">{{user.firstName}} {{user.lastName}}</ion-label>
       <ion-label class="username">@{{user.userName}}</ion-label>
     </ion-label>
   </ion-item>
-
 </ion-header>
 
 <ion-content>
@@ -31,7 +30,7 @@
   <!-- The cards to see the tricks -->
   <ion-card *ngFor="let trick of tricks">
     <img class="miniature" alt="Silhouette of mountains"
-      src="https://ionicframework.com/docs/img/demos/card-media.png" />
+      src="https://ionicframework.com/docs/img/demos/card-media.png" (click)="launchVideo($event)"/> <!-- {{trick.video}} en src de l'image -->
     <div class="card-text">
       <ion-card-header>
         <ion-card-title>{{trick.name}}</ion-card-title>

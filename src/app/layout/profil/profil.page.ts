@@ -32,7 +32,7 @@ declare type Trick = {
   spotId: string;
   spotName: string;
   userName: string;
-  categories: [string];
+  categories: string[];
 };
 
 declare type Spot = {
@@ -143,6 +143,8 @@ export class ProfilPage implements OnInit {
       const urlTricks = `${environment.apiUrl}/tricks/${id}`;
       this.http.delete(urlTricks).subscribe({
         next: (res) => {
+          console.log(res)
+          console.log(this.tricks)
           const index = this.tricks.indexOf(res)
           this.tricks.splice(index, 1)
           window.location.reload()
@@ -163,7 +165,7 @@ export class ProfilPage implements OnInit {
   modifyTrick(event: any) {
     this.modifView = true
     this.id = event.srcElement.attributes.id.nodeValue
-    //Retrieve the infos of the spot to modify
+    //Retrieve the infos of the trick to modify
     const trickUrl = `${environment.apiUrl}/tricks/${this.id}`
     this.http.get<Trick>(trickUrl).subscribe((trick) => {
       this.modifRequest = { name: trick.name, video: trick.video }
@@ -308,5 +310,12 @@ export class ProfilPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //Launch the video when click on image
+  launchVideo(e){
+    const videoUrl = e.srcElement.attributes.src.nodeValue
+    //Reste du code pour lancer la vidéo...
+    console.log(videoUrl + " playing...")
   }
 }

@@ -64,9 +64,87 @@ ion-card-content {
 
 .card-text {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 250px;
+}
+
+.photoSpot {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.detailsText {
+    font-size: 14px;
+}
+
+.detailsContainer {
+    margin-left: 20px;
+}
+
+.descriptionDetails {
+    margin: 20px;
+    font-size: 13px;
+}
+
+.labelDetails {
+    font-size: 12px;
+    color: #737373;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.detailHeader {
+    padding-bottom: 20px;
+}
+
+.detailsTrick {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    align-items: center;
+}
+
+
+.detailsTrick .miniature {
+    width: 100px;
+    height: 100px;
+    margin-left: 25px;
+}
+
+.detailsTrick .card-text {
+    height: 80%;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 
+.deleteIcon {
+    color: #b23b3b;
+}
+
 .card-buttons {
-    width: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.more {
+    width: 100%;
+}
+
+ion-modal .map {
+    width: 100%;
+    height: 200px;
 }
